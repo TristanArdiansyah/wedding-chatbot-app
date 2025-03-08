@@ -1,0 +1,47 @@
+.chatContainer {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    height: 300px;
+    overflow-y: auto;
+    background-color: #f9f9f9;
+  }
+  
+  .chatPair {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .userBubble {
+    padding: 0.75rem 1rem;
+    border-radius: 20px;
+    max-width: 70%;
+    animation: fadeIn 0.3s ease-out;
+    word-wrap: break-word;
+    background-color: #daf8cb;
+    align-self: flex-end;
+  }
+  
+  .botBubble {
+    padding: 0.75rem 1rem;
+    border-radius: 20px;
+    max-width: 70%;
+    animation: fadeIn 0.3s ease-out;
+    word-wrap: break-word;
+    background-color: #e0e0e0;
+    align-self: flex-start;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  

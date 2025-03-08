@@ -1,101 +1,233 @@
-import Image from "next/image";
+"use client";
+import React, { useState, useRef, ChangeEvent, FormEvent } from 'react';
+import ChatContainer from './components/ChatContainer';
+
+export interface ChatMessage {
+  query: string;
+  reply: string;
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  // Initialize chatHistory with a static introduction message from the bot.
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([
+    {
+      query: '',
+      reply: 'Hello! How can I help you with the wedding info today?'
+    }
+  ]);
+  const [query, setQuery] = useState('');
+  const [loading, setLoading] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  // Ref for auto-resizing textarea
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Handle auto-resize
+  const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setQuery(e.target.value);
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+    }
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!query.trim()) return;
+
+    setLoading(true);
+    try {
+      const res = await fetch('http://18.136.219.224:8000/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, chat_history: chatHistory })
+      });
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      setChatHistory((prev) => [...prev, { query, reply: data.response }]);
+      setQuery('');
+    } catch (error) {
+      console.error('Error calling API:', error);
+      setChatHistory((prev) => [
+        ...prev,
+        {
+          query: '',
+          reply:
+            'We are currently performing maintenance. Please try again later.'
+        }
+      ]);
+    } finally {
+      setLoading(false);
+      if (textareaRef.current) {
+        textareaRef.current.style.height = 'auto';
+      }
+    }
+  };
+
+  return (
+    <main className="relative min-h-screen w-full flex flex-col items-center">
+      {/* Background image (desktop only) */}
+      <div
+        className="
+          hidden md:block
+          absolute inset-0
+          bg-cover bg-center bg-no-repeat blur-sm
+        "
+        style={{ backgroundImage: "url('/images/bg.jpeg')" }}
+      />
+
+      {/* Outer container with margin & rounded corners */}
+      <div
+        className="
+          relative w-full max-w-md
+          flex flex-col
+          p-4
+          pt-10
+          bg-[#FFFCF6]
+          my-4
+          rounded-lg
+        "
+        style={{ height: 'calc(100vh - 2rem)' }}
+      >
+        <div className="container flex d-flex justify-center">
+          <img src="/images/ryan.png" alt="shape" height={10} width={100} />
+          <span className="p-5"></span>
+          <img src="/images/yasmin.png" alt="shape" height={10} width={100} />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        <h1 className="text-2xl font-bold text-center mb-4">
+          Ask about the Wedding!
+        </h1>
+
+        {/* Scrollable chat container */}
+        <div className="flex-auto overflow-y-auto mb-2">
+          <ChatContainer chatHistory={chatHistory} />
+        </div>
+
+        {/* Template slider */}
+        <div className="shrink-0">
+          <TemplateSlider setQuery={setQuery} />
+        </div>
+
+        {/* Form at bottom */}
+        <form
+          onSubmit={handleSubmit}
+          className="shrink-0 mt-2 flex items-end gap-2"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+          <textarea
+            ref={textareaRef}
+            rows={1}
+            placeholder="Enter your query"
+            value={query}
+            onChange={handleTextareaChange}
+            className="
+              flex-grow
+              rounded-md
+              border
+              border-[#335F70]
+              px-4
+              py-2
+              focus:outline-none
+              focus:ring-2
+              focus:ring-[#335F70]
+              resize-none
+              overflow-hidden
+              leading-tight
+              break-words
+              whitespace-pre-wrap
+            "
+            style={{ maxHeight: '10rem' }}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="
+              bg-[#DBB479] text-black 
+              rounded-full px-4 py-2
+              hover:bg-[#c7a269] disabled:bg-gray-400
+              transition-transform transform-gpu
+              hover:scale-105 active:scale-95
+              flex items-center justify-center
+            "
+          >
+            {loading ? (
+              <>
+                {/* Tailwind Spinner */}
+                <svg
+                  className="animate-spin h-5 w-5 mr-2 text-black"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8H4z"
+                  />
+                </svg>
+                Sending...
+              </>
+            ) : (
+              'Send'
+            )}
+          </button>
+        </form>
+        <img
+          src="/images/section-divider.png"
+          alt="shape"
+          className="pt-4"
+        />
+      </div>
+    </main>
+  );
+}
+
+/** TemplateSlider for prefilled queries */
+function TemplateSlider({ setQuery }: { setQuery: (value: string) => void }) {
+  const templates = [
+    {
+      label: 'Sender Data',
+      text: `I would like to buy them ... . Here is my Data\nName: ...\nEmail: ...`
+    },
+    {
+      label: 'Delivery Data',
+      text: `Here is my delivery information:\nAddress: ...\nPhone: ...`
+    },
+    {
+      label: 'Verify Purchase',
+      text: `I want to verify my purchase. Order ID: ...`
+    }
+  ];
+
+  return (
+    <div className="flex overflow-x-auto space-x-4 py-2">
+      {templates.map((template, index) => (
+        <button
+          key={index}
+          onClick={() => setQuery(template.text)}
+          className="
+            flex-shrink-0 
+            px-4 py-2 
+            rounded-full 
+            bg-yellow-100
+            hover:bg-yellow-300
+            text-gray-800
+            transition
+          "
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          {template.label}
+        </button>
+      ))}
     </div>
   );
 }
