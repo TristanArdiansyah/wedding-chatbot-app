@@ -36,7 +36,7 @@ export default function Home() {
 
     setLoading(true);
     try {
-      const res = await fetch('http://18.136.219.224:8000/query', {
+      const res = await fetch('https://api.ramarried.biomadev.my.id/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, chat_history: chatHistory })
@@ -53,7 +53,7 @@ export default function Home() {
       setChatHistory((prev) => [
         ...prev,
         {
-          query: '',
+          query: query,
           reply:
             'We are currently performing maintenance. Please try again later.'
         }
@@ -71,7 +71,6 @@ export default function Home() {
       {/* Background image (desktop only) */}
       <div
         className="
-          hidden md:block
           absolute inset-0
           bg-cover bg-center bg-no-repeat blur-sm
         "
@@ -81,12 +80,12 @@ export default function Home() {
       {/* Outer container with margin & rounded corners */}
       <div
         className="
-          relative w-full max-w-md
+          relative max-w-md
           flex flex-col
           p-4
           pt-10
           bg-[#FFFCF6]
-          my-4
+          m-4
           rounded-lg
         "
         style={{ height: 'calc(100vh - 2rem)' }}
