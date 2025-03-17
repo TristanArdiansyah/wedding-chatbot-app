@@ -196,7 +196,7 @@ function TemplateSlider({ setQuery }: { setQuery: (value: string) => void }) {
   const templates = [
     {
       label: 'Google Calendar',
-      text: `Give me the google calendar link.`
+      text: `Can i add the event to google calendar?`
     },
     {
       label: 'About Yasmin',
