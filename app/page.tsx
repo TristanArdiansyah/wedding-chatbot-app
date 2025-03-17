@@ -195,17 +195,45 @@ export default function Home() {
 function TemplateSlider({ setQuery }: { setQuery: (value: string) => void }) {
   const templates = [
     {
-      label: 'Sender Data',
-      text: `I would like to buy them ... . Here is my Data\nName: ...\nEmail: ...`
+      label: 'About Yasmin',
+      text: `I would like to know about Yasmin.`
     },
     {
-      label: 'Delivery Data',
-      text: `Here is my delivery information:\nAddress: ...\nPhone: ...`
+      label: 'About Ryan',
+      text: `I would like to know about Ryan.`
     },
     {
-      label: 'Verify Purchase',
-      text: `I want to verify my purchase. Order ID: ...`
-    }
+      label: 'About Couple',
+      text: `Tell me the couple's story.`
+    },
+    {
+      label: 'Navigate to Venue',
+      text: `How can i navigate to the venue?`
+    },
+    {
+      label: 'About Reception',
+      text: `When and where is the wedding reception?`
+    },
+    {
+      label: 'About RSVP',
+      text: `I want to RSVP.`
+    },
+    {
+      label: 'Gift Recommendation',
+      text: `Recommend me gifts for the couple.`
+    },
+    {
+      label: 'Reception Food',
+      text: `What kind of food is available?`
+    },
+    {
+      label: 'Dress Code',
+      text: `Give me the dress code for the wedding.`
+    },
+    {
+      label: 'Digital Wallet',
+      text: `Where can i send money as wedding gift?.`
+    },
   ];
 
   return (
