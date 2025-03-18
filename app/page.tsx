@@ -12,7 +12,7 @@ export default function Home() {
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([
     {
       query: '',
-      reply: 'Hello! How can I help you with the wedding info today?'
+      reply: "Hello! Do you have any questions regarding Yasmin & Ryan's wedding? I'm here to help!"
     }
   ]);
   const [query, setQuery] = useState('');
@@ -88,14 +88,14 @@ export default function Home() {
           m-4
           rounded-lg
         "
-        style={{ height: 'calc(100vh - 2rem)' }}
+        style={{ height: '95vh', width: '95vw' }}
       >
-        <div className="container flex d-flex justify-center">
-          <img src="/images/ryan.png" alt="shape" height={10} width={100} />
+        <div className="container flex d-flex justify-center" style={{height: "7vh"}}>
+          <img src="/images/yasmin.png" alt="shape" height={10} width={50} />
           <span className="p-5"></span>
-          <img src="/images/yasmin.png" alt="shape" height={10} width={100} />
+          <img src="/images/ryan.png" alt="shape" height={10} width={50} />
         </div>
-        <h1 className="text-2xl font-bold text-center mb-4">
+        <h1 className="text-xl font-bold text-center mb-4">
           Ask about the Wedding!
         </h1>
 
@@ -117,7 +117,7 @@ export default function Home() {
           <textarea
             ref={textareaRef}
             rows={1}
-            placeholder="Enter your query"
+            placeholder="Ask a question"
             value={query}
             onChange={handleTextareaChange}
             className="
@@ -186,6 +186,8 @@ export default function Home() {
           alt="shape"
           className="pt-4"
         />
+        <p className='text-gray-300 text-center text-xs'>💍 Disclaimer: The AI-generated response may contain inaccuracies. Please verify critical information with the couple!</p>
+        <p className='text-gray-300 text-center text-xs pt-1'>Powered by Bioma AI</p>
       </div>
     </main>
   );
