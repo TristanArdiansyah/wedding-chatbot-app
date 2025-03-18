@@ -90,10 +90,10 @@ export default function Home() {
         "
         style={{ height: '95vh', width: '95vw' }}
       >
-        <div className="container flex d-flex justify-center" style={{height: "7vh"}}>
-          <img src="/images/yasmin.png" alt="shape" height={10} width={50} />
+        <div className="container flex d-flex justify-center" >
+          <img src="/images/yasmin.png" alt="shape" height={10} width={100} />
           <span className="p-5"></span>
-          <img src="/images/ryan.png" alt="shape" height={10} width={50} />
+          <img src="/images/ryan.png" alt="shape" height={10} width={100} />
         </div>
         <h1 className="text-xl font-bold text-center mb-4">
           Ask about the Wedding!

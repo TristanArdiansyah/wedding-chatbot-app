@@ -2,8 +2,8 @@
 import './globals.css';
 
 export const metadata = {
-  title: 'Chatbot App',
-  description: 'A simple chatbot app with Next.js 13 & Tailwind'
+  title: "Yasmin & Ryan's Wedding AI Chatbot",
+  description: "An AI chatbot to ask anything related to Yasmin and Ryan's wedding. Brought to you by Bioma AI. "
 };
 
 export default function RootLayout({
