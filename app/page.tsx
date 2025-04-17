@@ -36,7 +36,7 @@ export default function Home() {
 
     setLoading(true);
     try {
-      const res = await fetch('https://api.ramarried.biomadev.my.id/query', {
+      const res = await fetch('https://api.biomadev.my.id/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, chat_history: chatHistory })
